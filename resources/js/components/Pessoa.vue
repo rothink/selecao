@@ -19,19 +19,10 @@
                         <v-container grid-list-md>
                             <v-layout wrap>
                                 <v-flex xs12 sm6 md4>
-                                    <v-text-field v-model="editedItem.name" label="Dessert name"></v-text-field>
+                                    <v-text-field v-model="formPessoa.nome" label="Nome"></v-text-field>
                                 </v-flex>
                                 <v-flex xs12 sm6 md4>
-                                    <v-text-field v-model="editedItem.calories" label="Calories"></v-text-field>
-                                </v-flex>
-                                <v-flex xs12 sm6 md4>
-                                    <v-text-field v-model="editedItem.fat" label="Fat (g)"></v-text-field>
-                                </v-flex>
-                                <v-flex xs12 sm6 md4>
-                                    <v-text-field v-model="editedItem.carbs" label="Carbs (g)"></v-text-field>
-                                </v-flex>
-                                <v-flex xs12 sm6 md4>
-                                    <v-text-field v-model="editedItem.protein" label="Protein (g)"></v-text-field>
+                                    <v-text-field v-model="formPessoa.sobrenome" label="Sobrenome"></v-text-field>
                                 </v-flex>
                             </v-layout>
                         </v-container>
@@ -47,7 +38,7 @@
         </v-toolbar>
         <v-data-table
                 :headers="headers"
-                :items="desserts"
+                :items="pessoas"
                 class="elevation-1"
         >
             <template slot="items" slot-scope="props">
@@ -92,21 +83,11 @@
                 { text: 'Sobrenome', value: 'sobrenome' },
                 { text: 'Actions', value: 'name', sortable: false }
             ],
-            desserts: [],
+            pessoas: [],
             editedIndex: -1,
-            editedItem: {
-                name: '',
-                calories: 0,
-                fat: 0,
-                carbs: 0,
-                protein: 0
-            },
-            defaultItem: {
-                name: '',
-                calories: 0,
-                fat: 0,
-                carbs: 0,
-                protein: 0
+            formPessoa: {
+                nome: '',
+                sobrenome: 0
             }
         }),
 
@@ -135,18 +116,17 @@
             getPessoas() {
                 axios.get('/api/pessoa')
                     .then(response => response.data)
-                    .then(response => this.desserts = response.data)
+                    .then(response => this.pessoas = response.data)
                     .catch(error => {
-                        helper.showDataErrorMsg(error);
                     })
             },
 
             initialize () {
-                this.desserts = []
+                this.pessoas = []
             },
 
             editItem (item) {
-                this.editedIndex = this.desserts.indexOf(item)
+                this.editedIndex = this.pessoas.indexOf(item)
                 this.editedItem = Object.assign({}, item)
                 this.dialog = true
             },
