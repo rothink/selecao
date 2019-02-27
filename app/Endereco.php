@@ -11,7 +11,7 @@ class Endereco extends Model
 {
     protected $table = 'Endereco';
 
-    protected $fillable  = [];
+    protected $fillable  = ['cep', 'logradouro', 'pessoa_id', 'complemento', 'bairro', 'localidade'];
 
 
     /**
@@ -55,22 +55,4 @@ class Endereco extends Model
      * @SWG\Property()
      */
     public $localidade = 'localidade';
-
-    /**
-     * Pessoa constructor.
-     * Função criada para adicionar automaticamente os atributos no fillable
-     * Criada por causa do swagger
-     */
-    public function __construct()
-    {
-        $this->fillable = [
-            $this->cep,
-            $this->logradouro,
-            $this->pessoa_id,
-            $this->complemento,
-            $this->bairro,
-            $this->localidade,
-        ];
-    }
-
 }

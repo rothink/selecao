@@ -19,7 +19,7 @@ class CreateEnderecoTable extends Migration
             $table->foreign('pessoa_id')->references('id')->on('pessoa');
             $table->integer('cep');
             $table->text('logradouro');
-            $table->text('complemento');
+            $table->text('complemento')->nullable();
             $table->text('bairro');
             $table->text('localidade');
             $table->timestamps();

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Endereco;
 use App\Pessoa;
 use Illuminate\Http\Request;
 
@@ -19,7 +20,7 @@ class PessoaController extends Controller
      *   @SWG\Response(
      *     response="default",
      *     description="an ""unexpected"" error"
-     *   )
+     *   ),
      * )
      * @return \Illuminate\Http\Response
      */
@@ -38,6 +39,9 @@ class PessoaController extends Controller
      *     response=200,
      *     description="Cadastrar pessoa"
      *   ),
+     *   @SWG\Header(
+     *      header="X-RateLimit-Remaining",
+     *   ),
      *   @SWG\Response(response="404", description="Resource Not Found"),
      *   @SWG\Response(response="400", description="Bad Request"),
      *   @SWG\Response(response="500", description="Error Request"),
@@ -46,7 +50,14 @@ class PessoaController extends Controller
      *     description="nome da pessoa",
      *     required=true,
      *     type="string",
-     *     in="path"
+     *     in="formData"
+     *   ),
+     *   @SWG\Parameter(
+     *     name="sobrenome",
+     *     description="sobrenome da pessoa",
+     *     required=true,
+     *     type="string",
+     *     in="formData"
      *   ),
      * )
      * @param Request $request
@@ -66,7 +77,7 @@ class PessoaController extends Controller
 
         try {
             $pessoa = Pessoa::create($arrParams);
-            return response()->json(['data' => $pessoa], 200);
+            return response()->json(['data' => $pessoa, 'msg' => 'Pessoa cadastrada com sucesso'], 200);
         } catch (\Exception $e) {
             return response()->json(['msg' => 'Erro ao cadastrar pessoa', 'detail' => $e->getMessage()], 500);
         }
@@ -110,28 +121,55 @@ class PessoaController extends Controller
 
         return response()->json(['data' => $pessoa], 200);
     }
-
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
+     * @SWG\Delete(
+     *   tags={"Pessoa"},
+     *   path="/pessoa/{id}",
+     *   summary="exclui uma pessoa e seus enderecos",
+     *   description="Exclui uma pessoa e seus enderecos pelo seu ID",
+     *   @SWG\Response(
+     *     response=200,
+     *     description="Exclui uma pessoa"
+     *   ),
+     *   @SWG\Response(response="404", description="Resource Not Found"),
+     *   @SWG\Response(response="400", description="Bad Request"),
+     *   @SWG\Response(response="500", description="Error Request"),
+     *   @SWG\Parameter(
+     *       name="id",
+     *       description="ID Pessoa",
+     *       required=true,
+     *       type="integer",
+     *       in="path"
+     *   ),
+     * )
      * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception* @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
+        if(empty($id)) {
+            return response()->json(['msg' => 'Por favor, informa o ID da pessoa'], 400);
+        }
+
+        $pessoa = Pessoa::find($id);
+
+        if(!$pessoa) {
+            return response()->json(['msg' => 'Nenhuma pessoa encontrado'], 404);
+        }
+
+        try {
+            $enderecos = $this->buscarEnderecosPorIdPessoa($id);
+            if($enderecos){
+                foreach ($enderecos as $endereco) {
+                    Endereco::destroy($endereco->id);
+                }
+            }
+            Pessoa::destroy($id);
+            return response()->json(['msg' => 'Excluido com sucesso'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['msg' => 'Erro ao excluir Usuario e seus enderecos', 'detail' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -163,12 +201,22 @@ class PessoaController extends Controller
         if(empty($idPessoa)) {
             return response()->json(['msg' => 'Por favor, informa o ID da pessoa'], 400);
         }
-        $endereco = \App\Endereco::where('pessoa_id', '=', $idPessoa)->get();
+        $endereco = $this->buscarEnderecosPorIdPessoa($idPessoa);
 
         if(count($endereco) == 0) {
             return response()->json(['msg' => 'Nenhum endereço encontrado'], 404);
         }
 
         return response()->json(['data' => $endereco]);
+    }
+
+    /**
+     * @param $idPessoa
+     * @return mixed
+     * Busca todos os enderecos pelo id da pessoa.
+     */
+    public function buscarEnderecosPorIdPessoa($idPessoa)
+    {
+        return \App\Endereco::where('pessoa_id', '=', $idPessoa)->get();
     }
 }

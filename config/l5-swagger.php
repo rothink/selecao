@@ -178,7 +178,7 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'swagger_version' => env('SWAGGER_VERSION', '3.0'),
+    'swagger_version' => env('SWAGGER_VERSION', '2.0'),
 
     /*
     |--------------------------------------------------------------------------
@@ -223,5 +223,7 @@ return [
      */
     'constants' => [
         'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
+        'SWAGGER_VERSION' => env('SWAGGER_VERSION', '2.0'),
     ],
+
 ];

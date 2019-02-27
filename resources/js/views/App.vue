@@ -1,6 +1,5 @@
 <template>
     <v-app>
-        <v-navigation-drawer app></v-navigation-drawer>
         <template>
             <v-toolbar dark color="primary">
 
@@ -10,10 +9,6 @@
 
                 <v-btn icon>
                     <v-icon>person</v-icon>
-                </v-btn>
-
-                <v-btn icon>
-                    <v-icon>map</v-icon>
                 </v-btn>
             </v-toolbar>
         </template>
