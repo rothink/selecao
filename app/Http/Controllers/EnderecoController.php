@@ -8,8 +8,19 @@ use Illuminate\Http\Request;
 class EnderecoController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
+     * @SWG\Get(
+     *   tags={"Endereco"},
+     *   path="/endereco",
+     *   summary="lista de enderecos",
+     *   @SWG\Response(
+     *     response=200,
+     *     description="Lista de enderecos"
+     *   ),
+     *   @SWG\Response(
+     *     response="default",
+     *     description="an ""unexpected"" error"
+     *   )
+     * )
      * @return \Illuminate\Http\Response
      */
     public function index()
@@ -39,15 +50,40 @@ class EnderecoController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
+     * @SWG\Get(
+     *   tags={"Endereco"},
+     *   path="/endereco/{id}",
+     *   summary="busca um endereco",
+     *   description="Retorna uma endereco pelo seu ID",
+     *   @SWG\Response(
+     *     response=200,
+     *     description="Busca uma endereco"
+     *   ),
+     *   @SWG\Response(response="404", description="Resource Not Found"),
+     *   @SWG\Response(response="400", description="Bad Request"),
+     *   @SWG\Parameter(
+     *       name="id",
+     *       description="ID Endereco",
+     *       required=true,
+     *       type="integer",
+     *       in="path"
+     *   ),
+     * )
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception* @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        $endereco = \App\Endereco::findOrFail($id);
-        return response()->json(['data' => $endereco]);
+        if(empty($id)) {
+            return response()->json(['msg' => 'Por favor, informa o ID do endereco'], 400);
+        }
+        $endereco = \App\Endereco::find($id);
+
+        if(!$endereco) {
+            return response()->json(['msg' => 'Nenhum endereco encontrado'], 404);
+        }
+        return response()->json(['data' => $endereco], 200);
     }
 
     /**

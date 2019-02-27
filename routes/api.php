@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 Route::get('/pessoa','PessoaController@index');
 Route::get('/pessoa/{id}','PessoaController@show');
 Route::get('/pessoa/{id}/endereco','PessoaController@enderecoByIdPessoa');
+Route::post('/pessoa', 'PessoaController@store');
 
 /**
  * Endereco
