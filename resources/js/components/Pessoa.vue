@@ -72,6 +72,9 @@
                 :headers="headers"
                 :items="pessoas"
                 class="elevation-1"
+                :rows-per-page-items="rowsPerPageItems"
+                rows-per-page-text="Pessoas por pagina"
+                :pagination.sync="pagination"
         >
             <template slot="items" slot-scope="props">
                 <td>{{ props.item.nome }}</td>
@@ -90,9 +93,6 @@
                         maps
                     </v-icon>
                 </td>
-            </template>
-            <template slot="no-data">
-                <v-btn color="primary" @click="initialize">Resetar</v-btn>
             </template>
         </v-data-table>
 
@@ -115,6 +115,10 @@
                 {text: 'Sobrenome', value: 'sobrenome'},
                 {text: 'Actions', value: 'name', sortable: false}
             ],
+            rowsPerPageItems: [10, 20, 30, 40],
+            pagination: {
+                rowsPerPage: 10
+            },
             enderecos: [],
             pessoas: [],
             formPessoa: new Form({

@@ -51,6 +51,6 @@ class EnderecoTableSeeder extends Seeder
                 'bairro' => 'trampo'
             ]
         );
-        factory(App\Endereco::class, 10)->create();
+        factory(App\Endereco::class, 30)->create();
     }
 }
