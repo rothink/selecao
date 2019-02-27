@@ -58,7 +58,7 @@
                                 </v-layout>
                             </v-img>
 
-                            <v-list two-line v-for="endereco in enderecos">
+                            <v-list two-line v-for="endereco in enderecos" key="endereco.id">
                                 <v-divider inset></v-divider>
                                 <v-list-tile @click="">
                                     <v-list-tile-action>
