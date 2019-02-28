@@ -22,12 +22,12 @@ Passo a passo
 
 ## 3) rodar a migrate
 
+    touch database/database.sqlite
+    
+## 4) cria o arquivo de banco  
+    
     php artisan migrate
     php artisan migrate:refresh --seed
-    
-## 4) cria o arquivo de banco
-
-    touch database/database.sqlite
     
 ## 5) publicar arquivos necessários
 
