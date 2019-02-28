@@ -17,10 +17,10 @@ Passo a passo
 ## 2) rodar composer e npm
     composer clear-cache && composer install && npm install
 
-## 3) rodar a migrate
+## 3) cria o arquivo de banco  
     touch database/database.sqlite
     
-## 4) cria o arquivo de banco  
+## 4) rodar a migrate  
     php artisan migrate
     php artisan migrate:refresh --seed
     
