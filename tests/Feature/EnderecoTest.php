@@ -5,20 +5,20 @@ namespace Tests\Feature;
 use App\Pessoa;
 use Tests\TestCase;
 
-class PessoaTest extends TestCase
+class EnderecoTest extends TestCase
 {
     /**
      * A basic feature test example.
      *
      * @return void
      */
-    public function testListarPessoas()
+    public function testListarEnderecos()
     {
-        $response = $this->get('/api/pessoa');
+        $response = $this->get('/api/endereco');
         $response->assertStatus(200, $response->getStatusCode());
     }
 
-    public function testeListarPessoaById()
+    public function testeListarEnderecoById()
     {
         $id = factory(Pessoa::class)->create()->id;
         $response = $this->get('/api/pessoa/' . $id);
