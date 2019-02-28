@@ -18,21 +18,28 @@ Passo a passo
 
 ## 2) rodar composer e npm
 
-    composer install && npm install
+    composer clear-cache && composer install && npm install
 
 ## 3) rodar a migrate
 
-    php artisan migrate:install
+    php artisan migrate
     php artisan migrate:refresh --seed
     
-##  4) publicar o swagger
-    php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
+## 4) cria o arquivo de banco
 
-##  5) inicializar a aplicação
-    php artisan serve
+    touch database/database.sqlite
+    
+## 4) publicar arquivos necessários
+
+    npm run dev
     
 ##  6) gerar documentação swagger api
+
     php artisan l5-swagger:generate
+    
+##  5) inicializar a aplicação
+
+    php artisan serve
     
 ## Crud de pessoa.
 
