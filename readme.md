@@ -29,7 +29,7 @@ Passo a passo
 
     touch database/database.sqlite
     
-## 4) publicar arquivos necessários
+## 5) publicar arquivos necessários
 
     npm run dev
     
@@ -37,7 +37,7 @@ Passo a passo
 
     php artisan l5-swagger:generate
     
-##  5) inicializar a aplicação
+##  7) inicializar a aplicação
 
     php artisan serve
     
@@ -48,10 +48,7 @@ http://localhost:8000
 ## Documentação api com swagger
 
 http://localhost:8000/api/documentation
-    
-    
-    
 
+## Tests
 
-
-
+    ./vendor/bin/phpunit
