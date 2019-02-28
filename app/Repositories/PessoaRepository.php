@@ -8,18 +8,24 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use App\Repositories\EnderecoRepository;
 
 /**
+ * @SWG\Definition(definition="Pessoa")
  * @package namespace App\Repositories;
  */
 class PessoaRepository extends BaseRepository
 {
     /**
-     * @var EnderecoRepository
+     * Nome da pessoa
+     * @var string
+     * @SWG\Property()
      */
-    protected $enderecoRepository;
+    public $nome;
 
-    public function __construct(EnderecoRepository $enderecoRepository){
-        $this->enderecoRepository = $enderecoRepository;
-    }
+    /**
+     * Sobrenome da pessoa
+     * @var string
+     * @SWG\Property()
+     */
+    public $sobrenome;
     /**
      * Specify Model class name
      * @return string
@@ -46,9 +52,10 @@ class PessoaRepository extends BaseRepository
         try {
             $pessoa = Pessoa::create($arrParams);
             if(isset($arrParams['enderecos']) && !empty($arrParams['enderecos'])) {
+                $enderecoRepository = new EnderecoRepository($this->app);
                 foreach($arrParams['enderecos'] as $endereco){
                     $endereco['pessoa_id'] = $pessoa->id;
-                    $this->enderecoRepository->save($endereco);
+                    $enderecoRepository->save($endereco);
                 }
             }
             return response()->json(['data' => $pessoa, 'msg' => 'Cadastro realizado com com sucesso'], 200);

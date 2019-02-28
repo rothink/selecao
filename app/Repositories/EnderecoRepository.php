@@ -6,10 +6,54 @@ use App\Endereco;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
+ * @SWG\Definition(definition="Endereco")
  * @package namespace App\Repositories;
  */
 class EnderecoRepository extends BaseRepository
 {
+    /**
+     * Cep do endereco
+     * @var integer
+     * @SWG\Property()
+     */
+    public $cep;
+
+    /**
+     * Logradouro do endereco
+     * @var string
+     * @SWG\Property()
+     */
+    public $logradouro;
+
+    /**
+     * ID da pessoa
+     * @var integer
+     * @SWG\Property()
+     */
+    public $pessoa_id;
+
+    /**
+     * Complemento do endereco
+     * @var string
+     * @SWG\Property()
+     */
+    public $complemento;
+
+    /**
+     * Bairro do endereco
+     * @var string
+     * @SWG\Property()
+     */
+    public $bairro;
+
+    /**
+     * Localidade do endereco
+     * @var string
+     * @SWG\Property()
+     */
+    public $localidade;
+
+
     /**
      * @return string
      */
