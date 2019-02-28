@@ -7,27 +7,105 @@
             <v-dialog v-model="form" max-width="800px">
                 <v-btn slot="activator" color="primary" dark class="mb-2">Cadastrar</v-btn>
                 <v-card>
-                    <v-card-title>
-                        <span class="headline">Novo</span>
-                    </v-card-title>
-                    <v-card-text>
-                        <v-container grid-list-md>
-                            <v-layout wrap>
-                                <v-flex>
-                                    <v-text-field v-model="formPessoa.nome" label="Nome"></v-text-field>
-                                </v-flex>
-                                <v-flex>
-                                    <v-text-field v-model="formPessoa.sobrenome" label="Sobrenome"></v-text-field>
-                                </v-flex>
+                    <v-form
+                            ref="form"
+                            v-model="valid"
+                            lazy-validation
+                    >
+                        <v-card-title>
+                            <span class="headline">Novo</span>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-container grid-list-md>
+                                <span class="blue--text">Pessoa</span>
+                                <v-layout align-center justify-center row fill-height>
+                                    <v-flex>
+                                        <v-text-field v-model="formPessoa.nome"
+                                                      label="Nome"
+                                                      required
+                                                      :rules="rules.nome"
+                                        ></v-text-field>
+                                    </v-flex>
+                                    <v-flex>
+                                        <v-text-field v-model="formPessoa.sobrenome"
+                                                      label="Sobrenome"
+                                                      required
+                                                      :rules="rules.sobrenome"
+                                        ></v-text-field>
+                                    </v-flex>
+                                </v-layout>
+                                <br/><br/>
                                 <v-divider></v-divider>
-                            </v-layout>
-                        </v-container>
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" flat @click="close">Cancelar</v-btn>
-                        <v-btn color="blue darken-1" flat @click="save">Salvar</v-btn>
-                    </v-card-actions>
+                                <br/><br/>
+                                <span class="blue--text">Endreço
+                                         <v-btn
+                                             absolute
+                                             dark
+                                             fab
+                                             botton
+                                             right
+                                             :color="(!formEndereco) ? 'green' : 'red' "
+                                             v-on:click="formEndereco = !formEndereco"
+                                         >
+                                            <v-icon v-if="!formEndereco">add</v-icon>
+                                            <v-icon v-if="formEndereco">remove</v-icon>
+                                        </v-btn>
+                                    </span>
+                                <v-layout wrap v-show="formEndereco">
+                                    <v-layout wrap>
+                                        <v-flex>
+                                            <v-text-field v-model="formPessoa.endereco.cep" label="cep"></v-text-field>
+                                        </v-flex>
+                                        <v-flex>
+                                            <v-text-field v-model="formPessoa.endereco.localidade"
+                                                          label="localidade"></v-text-field>
+                                        </v-flex>
+                                        <v-flex>
+                                            <v-text-field v-model="formPessoa.endereco.bairro"
+                                                          label="bairro"></v-text-field>
+                                        </v-flex>
+                                        <v-flex>
+                                            <v-text-field v-model="formPessoa.endereco.logradouro"
+                                                          label="logradouro"></v-text-field>
+                                        </v-flex>
+                                        <v-flex>
+                                            <v-text-field v-model="formPessoa.endereco.complemento"
+                                                          label="complemento"></v-text-field>
+                                        </v-flex>
+                                    </v-layout>
+                                    <v-layout>
+                                        <v-btn block color="success" @click="pushEndereco" dark>Adicionar endereço</v-btn>
+                                    </v-layout>
+                                    <v-container>
+                                        <v-flex xs12 sm12>
+                                            <v-expansion-panel>
+                                                <v-expansion-panel-content
+                                                        v-for="(item,i) in arrEnderecoForm"
+                                                        :key="i"
+                                                >
+                                                    <div slot="header">{{item.localidade}} - {{item.bairro}}</div>
+                                                    <v-card>
+                                                        <v-card-text>
+                                                            cep: {{item.cep}} <br/>
+                                                            logradouro: {{item.logradouro}} <br/>
+                                                            bairro: {{item.bairro}} <br/>
+                                                            complemento: {{item.complemento}} <br/>
+                                                            localidade: {{item.localidade}} <br/>
+                                                        </v-card-text>
+                                                    </v-card>
+                                                </v-expansion-panel-content>
+                                            </v-expansion-panel>
+                                        </v-flex>
+                                    </v-container>
+                                </v-layout>
+                            </v-container>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="blue darken-1" flat @click="close">Cancelar</v-btn>
+                            <v-btn color="blue darken-1" flat @click="save" :disabled="valid == false">Salvar</v-btn>
+                        </v-card-actions>
+                    </v-form>
                 </v-card>
             </v-dialog>
             <v-dialog v-model="showModalEndereco" max-width="800px">
@@ -53,7 +131,8 @@
                                         <v-icon color="indigo">location_on</v-icon>
                                     </v-list-tile-action>
                                     <v-list-tile-content>
-                                        <v-list-tile-title> {{endereco.bairro}} - {{endereco.localidade}}
+                                        <v-list-tile-title>
+                                            {{endereco.bairro}} - {{endereco.localidade}}
                                         </v-list-tile-title>
                                         <v-list-tile-sub-title>{{endereco.logradouro}}</v-list-tile-sub-title>
                                         <v-list-tile-sub-title>{{endereco.complemento}}</v-list-tile-sub-title>
@@ -103,16 +182,29 @@
 <script>
     export default {
         data: () => ({
+            rules: {
+                nome: [
+                    v => !!v || 'Nome é obrigatorio',
+                ],
+                sobrenome: [
+                    v => !!v || 'Sobrenome é obrigatorio',
+                ],
+                cep: [
+                    v => !!v
+                ]
+            },
+            valid: false,
+            formEndereco: false,
+            arrEnderecoForm: [],
             showModalEndereco: false,
             form: false,
             headers: [
                 {
-                    text: 'Pessoa',
+                    text: 'Nome',
                     align: 'left',
-                    sortable: false,
-                    value: 'name'
+                    value: 'nome'
                 },
-                {text: 'Sobrenome', value: 'sobrenome'},
+                {text: 'Sobrenome', value: 'sobrenome', sortable: false},
                 {text: 'Actions', value: 'name', sortable: false}
             ],
             rowsPerPageItems: [10, 20, 30, 40],
@@ -124,7 +216,15 @@
             formPessoa: new Form({
                 nome: '',
                 sobrenome: '',
-                id: ''
+                id: '',
+                endereco: {
+                    cep: '',
+                    logradouro: '',
+                    complemento: '',
+                    bairro: '',
+                    localidade: '',
+                },
+                enderecos: []
             }),
         }),
 
@@ -138,6 +238,11 @@
         watch: {
             form(val) {
                 val || this.close()
+            },
+            formEndereco(val) {
+                if(val == false) {
+                    this.arrEnderecoForm = [];
+                }
             }
         },
 
@@ -241,7 +346,14 @@
                 this.formPessoa = new Form({
                     nome: '',
                     sobrenome: '',
-                    id: ''
+                    id: '',
+                    endereco: {
+                        cep: '',
+                        logradouro: '',
+                        complemento: '',
+                        bairro: '',
+                        localidade: '',
+                    }
                 })
 
                 this.enderecos = []
@@ -251,6 +363,12 @@
              * Salvar novo usuário
              */
             save() {
+
+                console.info(this.arrEnderecoForm,'arr de enderecos');
+
+                this.formPessoa.enderecos = this.arrEnderecoForm
+
+                console.info(this.formPessoa)
 
                 this.formPessoa.post('/api/pessoa')
                     .then(response => {
@@ -264,6 +382,17 @@
                     });
 
                 this.close()
+            },
+
+            pushEndereco() {
+                this.arrEnderecoForm.push(this.formPessoa.endereco);
+                this.formPessoa.endereco = {
+                    cep: '',
+                    logradouro: '',
+                    complemento: '',
+                    bairro: '',
+                    localidade: '',
+                }
             }
         }
     }
