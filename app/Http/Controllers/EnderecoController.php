@@ -2,11 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Endereco;
+use App\Repositories\EnderecoRepository;
 use Illuminate\Http\Request;
 
 class EnderecoController extends Controller
 {
+    /**
+     * @var EnderecoRepository
+     */
+    protected $enderecoRepository;
+
+    public function __construct(
+        EnderecoRepository $enderecoRepository
+    ){
+        $this->enderecoRepository = $enderecoRepository;
+    }
+
     /**
      * @SWG\Get(
      *   tags={"Endereco"},
@@ -25,7 +36,7 @@ class EnderecoController extends Controller
      */
     public function index()
     {
-        return response()->json(['data' => Endereco::all()]);
+        return response()->json(['data' => $this->enderecoRepository->all()], 200);
     }
 
     /**
@@ -91,34 +102,7 @@ class EnderecoController extends Controller
      */
     public function store(Request $request)
     {
-        $arrParams = $request->all();
-
-        if(empty($arrParams['pessoa_id'])) {
-            return response()->json(['msg' => 'Por favor, informe o ID da pessoa'], 404);
-        }
-
-        if(empty($arrParams['cep'])) {
-            return response()->json(['msg' => 'Por favor, informe o cep'], 404);
-        }
-
-        if(empty($arrParams['logradouro'])) {
-            return response()->json(['msg' => 'Por favor, informe o logradouro'], 404);
-        }
-
-        if(empty($arrParams['bairro'])) {
-            return response()->json(['msg' => 'Por favor, informe o bairro'], 404);
-        }
-
-        if(empty($arrParams['localidade'])) {
-            return response()->json(['msg' => 'Por favor, informe a localidade'], 404);
-        }
-
-        try {
-            $endereco = Endereco::create($arrParams);
-            return response()->json(['data' => $endereco], 200);
-        } catch (\Exception $e) {
-            return response()->json(['msg' => 'Erro ao cadastrar Endereco', 'detail' => $e->getMessage()], 500);
-        }
+        return $this->enderecoRepository->save($request->all());
     }
 
     /**
@@ -148,15 +132,7 @@ class EnderecoController extends Controller
      */
     public function show($id)
     {
-        if(empty($id)) {
-            return response()->json(['msg' => 'Por favor, informa o ID do endereco'], 400);
-        }
-        $endereco = \App\Endereco::find($id);
-
-        if(!$endereco) {
-            return response()->json(['msg' => 'Nenhum endereco encontrado'], 404);
-        }
-        return response()->json(['data' => $endereco], 200);
+        return $this->enderecoRepository->show($id);
     }
 
     /**
@@ -186,21 +162,6 @@ class EnderecoController extends Controller
      */
     public function destroy($id)
     {
-        if(empty($id)) {
-            return response()->json(['msg' => 'Por favor, informa o ID do endereco'], 400);
-        }
-
-        $endereco = Endereco::find($id);
-
-        if(!$endereco) {
-            return response()->json(['msg' => 'Nenhum endereco encontrado'], 404);
-        }
-
-        try {
-            Endereco::destroy($id);
-            return response()->json(['msg' => 'Excluido com sucesso'], 200);
-        } catch (\Exception $e) {
-            return response()->json(['msg' => 'Erro ao excluir Endereco', 'detail' => $e->getMessage()], 500);
-        }
+        return $this->enderecoRepository->destroy($id);
     }
 }
